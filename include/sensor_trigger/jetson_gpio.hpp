@@ -33,17 +33,20 @@ typedef int gpio_state;
 
 namespace jetson_gpio
 {
-// Mapping of GPIO number to pin number for ROSCubeX
-// Note: pin 5->216 is pin 5 on the DB50 connector, run by GPIO chip 216 (starting at GPIO number
-// 216)
-static std::map<int, int> pin_gpio_mapping{{5, 216}, {51, 408}, {52, 350}, {53, 446}, {54, 445}};
+// Mapping of GPIO number to pin number for RQX-59G
+// Fsync N: <first, second>
+// Fsync 0: <440, PP.00>
+// Fsync 1: <397, PH.06>
+// Fsync 2: <487, PAC.01>
+// Fsync 3: <486, PAC.00>
+static std::map<int, std::pair<int, std::string>> pin_gpio_mapping{{0, {440, "PP.00"}}, {1, {397, "PH.06"}}, {2, {487, "PAC.01"}}, {3, {486, "PAC.00"}}};
 
 class JetsonGpio
 {
 public:
   JetsonGpio() : state_file_descriptor_(-1) {}
   ~JetsonGpio();
-  bool init_gpio_pin(int gpio_pin, gpio_direction direction);
+  bool init_gpio_pin(int fsync_index, gpio_direction direction);
   bool set_gpio_pin_state(gpio_state state);
 
 protected:
@@ -52,7 +55,7 @@ protected:
   bool set_gpio_direction(gpio_direction direction);
 
   int state_file_descriptor_;
-  int gpio_;
+  std::pair<int, std::string> fsync_gpio_;
 };
 }  // namespace jetson_gpio
 #endif  // SENSOR_TRIGGER__JETSON_GPIO_HPP_

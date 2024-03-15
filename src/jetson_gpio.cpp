@@ -33,9 +33,9 @@ JetsonGpio::~JetsonGpio()
   unexport_gpio();
 }
 
-bool JetsonGpio::init_gpio_pin(int gpio_pin, gpio_direction direction)
+bool JetsonGpio::init_gpio_pin(int fsync_index, gpio_direction direction)
 {
-  gpio_ = pin_gpio_mapping[gpio_pin];
+  fsync_gpio_ = pin_gpio_mapping[fsync_index];
   // Setup GPIO to use
   if (!export_gpio()) {
     return false;
@@ -46,7 +46,7 @@ bool JetsonGpio::init_gpio_pin(int gpio_pin, gpio_direction direction)
 
   // Open file for writing state and keep it as a member of the class to avoid iterative open/close
   char buffer[BUFFER_SIZE];
-  snprintf(buffer, sizeof(buffer), SYSFS_GPIO_DIR "/gpio%d/value", gpio_);
+  snprintf(buffer, sizeof(buffer), SYSFS_GPIO_DIR "/%s/value", fsync_gpio_.second.c_str());
   switch (direction) {
     case GPIO_OUTPUT:
       state_file_descriptor_ = open(buffer, O_WRONLY);
@@ -70,7 +70,7 @@ bool JetsonGpio::export_gpio()
   // Check target GPIO is available (not opened) first.
   // If it is unavailable, close the port and try to open it.
   std::string target_gpio =
-    std::string(SYSFS_GPIO_DIR) + std::string("/gpio") + std::to_string(gpio_);
+    std::string(SYSFS_GPIO_DIR) + std::string("/") + fsync_gpio_.second.c_str();
   struct stat return_status;
   if (stat(target_gpio.c_str(), &return_status) == 0) {
     unexport_gpio();
@@ -81,7 +81,7 @@ bool JetsonGpio::export_gpio()
     return false;
   }
 
-  buffer_length = snprintf(buffer, sizeof(buffer), "%d", gpio_);
+  buffer_length = snprintf(buffer, sizeof(buffer), "%d", fsync_gpio_.first);
   if (write(file_descriptor, buffer, buffer_length) != buffer_length) {
     close(file_descriptor);
     return false;
@@ -103,7 +103,7 @@ bool JetsonGpio::unexport_gpio()
   if (file_descriptor < 0) {
     return false;
   }
-  buffer_length = snprintf(buffer, sizeof(buffer), "%d", gpio_);
+  buffer_length = snprintf(buffer, sizeof(buffer), "%d", fsync_gpio_.first);
   if (write(file_descriptor, buffer, buffer_length) != buffer_length) {
     close(file_descriptor);
     return false;
@@ -121,7 +121,7 @@ bool JetsonGpio::set_gpio_direction(gpio_direction direction)
   int file_descriptor;
   char buffer[BUFFER_SIZE];
 
-  snprintf(buffer, sizeof(buffer), SYSFS_GPIO_DIR "/gpio%d/direction", gpio_);
+  snprintf(buffer, sizeof(buffer), SYSFS_GPIO_DIR "/%s/direction", fsync_gpio_.second.c_str());
 
   file_descriptor = open(buffer, O_WRONLY);
   if (file_descriptor < 0) {

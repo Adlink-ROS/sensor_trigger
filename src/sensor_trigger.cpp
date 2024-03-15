@@ -23,29 +23,30 @@ SensorTrigger::SensorTrigger(const rclcpp::NodeOptions & node_options)
   // Get the triggering parameters
   fps_ = declare_parameter("frame_rate", 10.0);
   phase_ = declare_parameter("phase", 0.0);
-  gpio_ = declare_parameter("gpio", 0);
+  fsync_index_ = declare_parameter("fsync_index", 0);
   cpu_ = declare_parameter("cpu_core_id", 1);
   pulse_width_ms_ = declare_parameter("pulse_width_ms", 5);
 
-  if (gpio_ <= 0) {
+  if (fsync_index_ < 0 || fsync_index_ > 3) {
     RCLCPP_ERROR_STREAM(
       get_logger(),
-      "No valid trigger GPIO specified. Not using triggering on GPIO " << gpio_ << ".");
+      "No valid Fsync index specified. Not using triggering on Fsync " << fsync_index_ << ".");
     rclcpp::shutdown();
     return;
   }
 
-  if (!gpio_handler_.init_gpio_pin(gpio_, GPIO_OUTPUT)) {
+
+  if (!gpio_handler_.init_gpio_pin(fsync_index_, GPIO_OUTPUT)) {
     RCLCPP_ERROR_STREAM(
       get_logger(),
-      "Failed to initialize GPIO trigger. Not using triggering on GPIO " << gpio_ << ".");
+      "Failed to initialize Fsync GPIO. Not using triggering on Fsync " << fsync_index_ << ".");
     rclcpp::shutdown();
     return;
   }
 
   if (fps_ < 1.0) {
     RCLCPP_ERROR_STREAM(
-      get_logger(), "Unable to trigger slower than 1 fps. Not triggering on GPIO " << gpio_ << ".");
+      get_logger(), "Unable to trigger slower than 1 fps. Not triggering on Fsync " << fsync_index_ << ".");
     rclcpp::shutdown();
     return;
   }
@@ -53,8 +54,8 @@ SensorTrigger::SensorTrigger(const rclcpp::NodeOptions & node_options)
   if (cpu_ < 0 || cpu_ >= static_cast<int>(std::thread::hardware_concurrency())) {
     RCLCPP_WARN_STREAM(
       get_logger(), "Selected CPU core"
-                      << cpu_ << " is not available on this architecture. Not triggering on GPIO "
-                      << gpio_ << ".");
+                      << cpu_ << " is not available on this architecture. Not triggering on Fsync "
+                      << fsync_index_ << ".");
   }
 
   // Set CPU affinity

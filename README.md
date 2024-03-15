@@ -2,15 +2,14 @@
 
 ## Introduction
 
-This repository provides a ROS2 package for generating sensor trigger signals on a Jetson AGX Xavier. It is specifically designed for use with the ADLINK ROSCube RQX-58G, providing pin mapping for the GPIO which are internally connected to the FPGA which controls FSYNC for the built-in GMSL deserializers.
+This repository provides a ROS2 package for generating sensor trigger signals on a Jetson AGX Orin. It is specifically designed for use with the ADLINK ROScube RQX-59G, providing pin mapping for the GPIO which are internally connected to the FPGA which controls FSYNC for the built-in GMSL deserializers.
 
 ## Requirements
 
-- ECU: Jetson Xavier AGX from NVIDIA Corp.
-  - The software in this package is pre-configured for use with ROSCube RQX-58G from ADLINK, although it can be modified to run hardware triggers by using different GPIO on any Jetson Xavier AGX based ECU. The remainder of this document assumes that the user is working with an RQX-58G.
-- OS: Ubuntu 18.04 or higher
+- ECU: RQX-59G (Jetson AGX Orin)
+  - The software in this package is pre-configured for use with ROScube RQX-59G from ADLINK.
+- OS: Ubuntu 20.04 or higher
 - ROS2: Galactic Geochelone
-  - With current BSP versions, Ubuntu 18.04 must be run on Jetson Xavier AGX within a docker environment. Please refer to [tier4/perception_ecu_container](https://github.com/tier4/perception_ecu_container) for how to prepare the OS and ROS2 environment.
 
 ## Installation
 
@@ -32,6 +31,7 @@ This repository provides a ROS2 package for generating sensor trigger signals on
 
     Some notes about thread scheduling:
     - If you do not make the settings in (2), the node will run but the timing thread will not be scheduled at any higher priority that other user threads and interruption may occur, resulting in high jitter in the trigger output.
+    
     - When running in a ROS2 docker, the settings in (2) are not required as the docker user is by default the root user.
 
 ## Usage
@@ -65,7 +65,7 @@ This node does not take any inputs.
 
 | Name          | Type   | Description                                                  |
 | ------------- | ------ | ------------------------------------------------------------ |
-| `gpio`        | int    | Output GPIO pin - see below for assigned pins on RQX-58G     |
+| `fsync_index`        | int    | Output FSYNC GPIO pin - see below for assigned pins on RQX-59G     |
 | `phase`       | double | Desired phase of the trigger relative to ToS (Top of Second) |
 | `frame_rate`  | double | Desired frequency of the trigger in Hz                       |
 | `cpu_core_id` | int    | Desired CPU core for execution\*                             |
@@ -73,15 +73,14 @@ This node does not take any inputs.
 
 \*This is indexed from CPU core 0 (which will be CPU 1 in `htop`).
 
-### Included Pin Mappings (RQX-58G)
+### Included Pin Mappings (RQX-59G)
 
 | Pin | GPIO (sysfs) | Description                                                             |
 | --- | ------------ | ----------------------------------------------------------------------- |
-| 5   | 216          | Pin 5 on the RQX-58G's DB50 connector, run by GPIO chip 216             |
-| 51  | 408          | Pin 51 on the RQX-58G, internally connected to FSYNC on deserializer #1 |
-| 52  | 350          | Pin 52 on the RQX-58G, internally connected to FSYNC on deserializer #2 |
-| 53  | 446          | Pin 53 on the RQX-58G, internally connected to FSYNC on deserializer #3 |
-| 54  | 445          | Pin 54 on the RQX-58G, internally connected to FSYNC on deserializer #4 |
+| 0  | gpio-440 (PP.00)          | FSYNC-0 on the RQX-59G, internally connected to FSYNC on deserializer #1 |
+| 1  | gpio-397 (PH.06)          | FSYNC-1 on the RQX-59G, internally connected to FSYNC on deserializer #2 |
+| 2  | gpio-487 (PAC.01)          | FSYNC-2 on the RQX-59G, internally connected to FSYNC on deserializer #3 |
+| 3  | gpio-486 (PAC.00)          | FSYNC-2 on the RQX-59G, internally connected to FSYNC on deserializer #4 |
 
 ## Related Repositories
 
