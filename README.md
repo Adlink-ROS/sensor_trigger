@@ -21,7 +21,17 @@ This repository provides a ROS2 package for generating sensor trigger signals on
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-up-to sensor_trigger
     ```
 
-2. The sensor trigger node requires as close to real-time operation as possible to maintain reliable trigger timing under heavy CPU load. If this is required, it is recommended to allow thread schedule priority setting to the ROS2 user by adding the following line to `/etc/security/limits.conf`:
+2. Copy the ROScube udev rules to the right place and then reboot system to take effect.
+
+    ```bash
+    cd sensor_trigger
+    sudo cp 99-roscube-gpio.rules /dev/udev/rules.d/
+    sudo reboot
+    ```
+    
+    - If you do not copy the udev rules, you will have no permission to access the FSYNC GPIO.
+
+3. The sensor trigger node requires as close to real-time operation as possible to maintain reliable trigger timing under heavy CPU load. If this is required, it is recommended to allow thread schedule priority setting to the ROS2 user by adding the following line to `/etc/security/limits.conf`:
 
     ```
     <username>    -   rtprio   98

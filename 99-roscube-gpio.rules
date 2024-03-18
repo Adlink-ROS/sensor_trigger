@@ -1,0 +1,7 @@
+
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ACTION=="add", \
+    PROGRAM="/bin/sh -c 'chown root:gpio /sys/class/gpio/export /sys/class/gpio/unexport; chmod 222 /sys/class/gpio/export /sys/class/gpio/unexport'"
+
+SUBSYSTEM=="gpio", KERNEL=="*", ACTION=="add", \
+    PROGRAM="/bin/sh -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value; chmod 666 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'"
+
