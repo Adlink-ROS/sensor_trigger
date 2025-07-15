@@ -1,0 +1,17 @@
+# sudo gpioinfo
+# PP.00 for fsync1
+fsync1:
+  chip: 0
+  line: 92
+# PH.06 for fsync2
+fsync2:
+  chip: 0
+  line: 49
+# PAC.01 for fsync3
+fsync3:
+  chip: 0
+  line: 139
+# PAC.00 for fsync4
+fsync4:
+  chip: 0
+  line: 138

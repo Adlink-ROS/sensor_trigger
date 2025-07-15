@@ -1,0 +1,62 @@
+<launch>
+  <arg name="frame_rate" default="10.0"/>
+  <arg name="pulse_width_ms" default="5"/>
+  <arg name="gpio_mapping_file" default="$(find-pkg-share sensor_trigger)/config/rqx590_gpio_mapping.yaml"/>
+  <arg name="group0_ns" default="group0"/>
+  <arg name="group1_ns" default="group1"/>
+  <arg name="group2_ns" default="group2"/>
+  <arg name="group3_ns" default="group3"/>
+
+  <!-- Group 0 -->
+  <group>
+    <push-ros-namespace namespace="$(var group0_ns)"/>
+    <node pkg="sensor_trigger" exec="sensor_trigger_exe" name="sensor_trigger">
+      <param name="gpio_name" value="fsync1"/>
+      <param name="phase" value="0.0"/>
+      <param name="frame_rate" value="$(var frame_rate)"/>
+      <param name="cpu_core_id" value="4"/>
+      <param name="pulse_width_ms" value="$(var pulse_width_ms)"/>
+      <param name="gpio_mapping_file" value="$(var gpio_mapping_file)"/>
+    </node>
+  </group>
+  
+  <!-- Group 1 -->
+  <group>
+    <push-ros-namespace namespace="$(var group1_ns)"/>
+    <node pkg="sensor_trigger" exec="sensor_trigger_exe" name="sensor_trigger">
+      <param name="gpio_name" value="fsync2"/>
+      <param name="phase" value="90.0"/>
+      <param name="frame_rate" value="$(var frame_rate)"/>
+      <param name="cpu_core_id" value="5"/>
+      <param name="pulse_width_ms" value="$(var pulse_width_ms)"/>
+      <param name="gpio_mapping_file" value="$(var gpio_mapping_file)"/>
+    </node>
+  </group>
+  
+  <!-- Group 2 -->
+  <group>
+    <push-ros-namespace namespace="$(var group2_ns)"/>
+    <node pkg="sensor_trigger" exec="sensor_trigger_exe" name="sensor_trigger">
+      <param name="gpio_name" value="fsync3"/>
+      <param name="phase" value="180.0"/>
+      <param name="frame_rate" value="$(var frame_rate)"/>
+      <param name="cpu_core_id" value="6"/>
+      <param name="pulse_width_ms" value="$(var pulse_width_ms)"/>
+      <param name="gpio_mapping_file" value="$(var gpio_mapping_file)"/>
+    </node>
+  </group>
+
+  <!-- Group 3 -->
+  <group>
+    <push-ros-namespace namespace="$(var group3_ns)"/>
+    <node pkg="sensor_trigger" exec="sensor_trigger_exe" name="sensor_trigger">
+      <param name="gpio_name" value="fsync4"/>
+      <param name="phase" value="270.0"/>
+      <param name="frame_rate" value="$(var frame_rate)"/>
+      <param name="cpu_core_id" value="7"/>
+      <param name="pulse_width_ms" value="$(var pulse_width_ms)"/>
+      <param name="gpio_mapping_file" value="$(var gpio_mapping_file)"/>
+    </node>
+  </group>
+
+</launch>
