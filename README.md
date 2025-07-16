@@ -8,7 +8,7 @@ This repository provides a ROS2 package for generating sensor trigger signals on
 
 - ECU: RQX-59G (Jetson AGX Orin)
   - The software in this package is pre-configured for use with ROScube RQX-59G from ADLINK.
-- OS: Ubuntu 20.04 or higher
+- OS: Ubuntu 20.04  (JetPack 5.1.2 / L4T R35.4.1)
 - ROS2: Galactic Geochelone
 
 ## Installation
