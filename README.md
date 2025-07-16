@@ -16,16 +16,23 @@ This repository provides a ROS2 package for generating sensor trigger signals on
 1. Create or change into your workspace directory, and execute the following:
 
     ```bash
-    mkdir -p src
-    git clone git@github.com:tier4/sensor_trigger.git src
+    # Create a workspace and download the repo
+    mkdir -p ~/ros2_ws/src
+    cd ~/ros2_ws/src
+    git clone https://github.com/Adlink-ROS/sensor_trigger.git -b l4t-r35.4
+
+    # Install the dependent packages
+    cd ~/ros2_ws/
+    rosdep install --from-paths src --ignore-src -r -y
+
+    # Compile the repo
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-up-to sensor_trigger
     ```
 
 2. Copy the ROScube udev rules to the right place and then reboot system to take effect.
 
     ```bash
-    cd sensor_trigger
-    sudo cp 99-roscube-gpio.rules /dev/udev/rules.d/
+    sudo cp ~/ros2_ws/src/sensor_trigger/99-roscube-gpio.rules /etc/udev/rules.d/
     sudo reboot
     ```
     
@@ -54,7 +61,7 @@ Setting the CPU core for operation is recommended to improve timing stability. A
 The node can be launched with the default parameters as follows:
 
 ```bash
-ros2 launch sensor_trigger sensor_trigger.launch
+ros2 launch sensor_trigger sensor_trigger.launch.xml
 ```
 
 ## Inputs / Outputs
