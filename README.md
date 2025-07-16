@@ -17,12 +17,12 @@ This repository provides a ROS 2 package for generating sensor trigger signals o
 
     ```bash
     # Create a workspace and download the repo
-    mkdir -p ros2_ws/src
-    cd ros2_ws/src
-    git clone git@github.com:tier4/sensor_trigger.git
+    mkdir -p ~/ros2_ws/src
+    cd ~/ros2_ws/src
+    git clone https://github.com/Adlink-ROS/sensor_trigger.git -b l4t-r36.4
     
     # Install the dependent packages
-    cd ..
+    cd ~/ros2_ws/
     rosdep install --from-paths src --ignore-src -r -y
     
     # Compile the repo
