@@ -47,9 +47,15 @@ This repository provides a ROS2 package for generating sensor trigger signals on
     After saving the edited file (as sudo), a reboot will be required.
 
     Some notes about thread scheduling:
-    - If you do not make the settings in (2), the node will run but the timing thread will not be scheduled at any higher priority that other user threads and interruption may occur, resulting in high jitter in the trigger output.
-    
-    - When running in a ROS2 docker, the settings in (2) are not required as the docker user is by default the root user.
+    - If you do not make the settings in (3), the node will run but the timing thread will not be scheduled at any higher priority that other user threads and interruption may occur, resulting in high jitter in the trigger output.
+    - If the error `Failed to set schedule parameters` occurs, this indicates a bug introduced after installing NVIDIA JetPack. To work around this issue, execute the following command:
+        ```bash
+        echo $$ | sudo tee /sys/fs/cgroup/cpu/tasks
+
+        # And then continue run sensor trigger program in this terminal. e.g.
+        ros2 launch sensor_trigger multiple_sensor_trigger.launch.xml
+        ```
+    - When running in a ROS2 docker, the settings in (3) are not required as the docker user is by default the root user.
 
 ## Usage
 
